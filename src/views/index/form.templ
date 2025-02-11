@@ -1,0 +1,40 @@
+package views
+
+templ Form(started bool) {
+  // Create a form with htmx contains 3 input fields and a submit button
+  <form id="form" hx-post="/start" hx-swap="none" class="w-full h-full flex flex-col items-center justify-center" hx-on="submit: event.preventDefault()">
+      <div class="w-2/3 flex flex-col items-center">
+        <label for="token" class="font-bold self-start">Bearer token</label> 
+        <input type="text" name="token" placeholder="Bearer <token>" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]" required="true" />
+      </div>
+
+      <div class="w-2/3 flex flex-col items-center">
+        <label for="ecrn" class="font-bold self-start">Alınacak Dersler</label> 
+        <input type="text" name="ecrn" placeholder="CRN1,CRN2,CRN3" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]" required="true" />
+      </div>
+
+      <div class="w-2/3 flex flex-col items-center">
+        <label for="scrn" class="font-bold self-start">Bırakılacak Dersler</label> 
+        <input type="text" name="scrn" placeholder="CRN1,CRN2,CRN3" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]" required="true" />
+      </div>
+
+      <div class="w-2/3 flex flex-col items-center">
+        <label for="timeout" class="font-bold self-start">İstek aralığı</label> 
+        <input type="text" name="timeout" placeholder="Süre" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]" required="true" />
+      </div>
+    @FormButtons(started)
+  </form>
+}
+
+templ FormButtons(started bool) {
+  <div id="form-buttons" class="w-full flex justify-center">
+    if !started {
+      <button type="submit" class="block w-2/3 p-2 m-2 bg-blue-500 text-white hover:cursor-pointer">Başlat</button>
+    } else {
+      <div class="flex space-x-2">
+        <button class="block w-1/2 p-2 m-2 bg-gray-800 text-white hover:cursor-disabled" disabled=true >Başlat</button>
+        <button hx-get="/stop" hx-swap="none" class="block w-1/2 p-2 m-2 bg-red-500 text-white hover:cursor-pointer" >Durdur</button>
+      </div>
+    }
+  </div>
+}

@@ -1,0 +1,10 @@
+package views
+
+templ Log(messages []string) {
+  <div class="w-full h-full flex flex-col justify-center items-center  bg-[#101010]"> 
+    <div class="text-3xl pb-12">
+      Server Log
+    </div>
+    @Messages(messages)
+  </div> 
+}

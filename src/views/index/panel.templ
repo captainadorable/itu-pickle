@@ -1,0 +1,12 @@
+package views
+
+templ Panel(started bool, messages []string) {
+<div class="w-11/12 h-11/12 flex text-white" hx-ext="ws" ws-connect="/ws">
+  <div class="w-1/3 h-full bg-[#1B1A55]">
+    @Form(started)
+  </div>
+  <div class="w-2/3 h-full bg-[#070F2B]">
+    @Log(messages)
+  </div>
+</div>
+}

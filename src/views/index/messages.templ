@@ -1,0 +1,9 @@
+package views
+
+templ Messages(messages []string) {
+  <div class="h-2/3 w-full flex flex-col space-y-2 p-4 overflow-auto text-sm" id="messages" hx-swap-oob="beforeend">
+    for _, msg := range messages {
+      @Message(msg)
+    }
+  </div>
+}

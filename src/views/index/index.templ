@@ -1,0 +1,10 @@
+package views
+
+import "itu-pickle/views/layout"
+
+templ Index(started bool, messages []string) {
+  @views.Layout() {
+    @Panel(started, messages)
+  }
+}
+  

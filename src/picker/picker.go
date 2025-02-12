@@ -52,6 +52,7 @@ func Stop() {
 }
 
 func CheckCrns(ecrns, scrns []string) bool {
+  fmt.Println(len(ecrns), len(scrns))
   crns := append(ecrns, scrns...)
 
 	crnList := utils.FindCrns(crns)

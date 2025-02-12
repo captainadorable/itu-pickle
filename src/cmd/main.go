@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"itu-pickle/config"
 	"itu-pickle/handlers"
 
@@ -18,6 +19,11 @@ func main() {
   e.POST("/start", handlers.HandleStart)
   e.GET("/stop", handlers.HandleStop)
 
-  e.Logger.Fatal(e.Start(":3001"))
+  e.GET("/favicon.ico", func(c echo.Context) error {
+    return c.File("./favicon.ico")
+  })
+
+  fmt.Println("Sunucu başlatıldı. Arayüz: http://localhost"+config.Port)
+  e.Logger.Fatal(e.Start(config.Port))
 }
 

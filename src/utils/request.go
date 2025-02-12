@@ -21,7 +21,7 @@ type Post struct {
 }
 
 func Request(ecrnList, scrnList []string, token string) {
-	url := "https://obs.itu.edu.tr/api/ders-kayit/v21"
+	url := config.Url
 
 	ecrnString := ""
 	for _, crn := range ecrnList {

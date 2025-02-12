@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-type EcrnResult struct {
+type CrnResult struct {
 	Crn               string `json:"crn"`
 	OperationFinished bool   `json:"operationFinished"`
 	StatusCode        int    `json:"statusCode"`
@@ -17,7 +17,8 @@ type EcrnResult struct {
 }
 
 type Post struct {
-	EcrnResultList []EcrnResult `json:"ecrnResultList"`
+	EcrnResultList []CrnResult `json:"ecrnResultList"`
+  ScrnResultList []CrnResult `json:"scrnResultList"`
 }
 
 func Request(ecrnList, scrnList []string, token string) {
@@ -86,9 +87,17 @@ func Request(ecrnList, scrnList []string, token string) {
 
 	// print response
   config.Logcu.Log("<--SONUÇLAR-->")
+  config.Logcu.Log("Alınacak dersler")
 	for _, ecrn := range post.EcrnResultList {
 		// Write those in 1 line
 		config.Logcu.Log(fmt.Sprintf("[%s] -> [%t] -> [%d] -> [%s]", ecrn.Crn, ecrn.OperationFinished, ecrn.StatusCode, ecrn.ResultCode))
 		config.Logcu.Log(fmt.Sprintf(returnValues[ecrn.ResultCode], ecrn.Crn))
+	}
+
+  config.Logcu.Log("Bırakılacak dersler")
+	for _, scrn := range post.ScrnResultList {
+		// Write those in 1 line
+		config.Logcu.Log(fmt.Sprintf("[%s] -> [%t] -> [%d] -> [%s]", scrn.Crn, scrn.OperationFinished, scrn.StatusCode, scrn.ResultCode))
+		config.Logcu.Log(fmt.Sprintf(returnValues[scrn.ResultCode], scrn.Crn))
 	}
 }

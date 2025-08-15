@@ -2,9 +2,9 @@ package views
 
 import "itu-pickle/views/layout"
 
-templ Index(started bool, messages []string) {
+templ Index(started bool, messages []string, fullname string, loggedin bool) {
   @views.Layout() {
-    @Panel(started, messages)
+    @Panel(started, messages, fullname, loggedin)
   }
 }
   

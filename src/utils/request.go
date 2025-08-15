@@ -18,7 +18,7 @@ type CrnResult struct {
 
 type Post struct {
 	EcrnResultList []CrnResult `json:"ecrnResultList"`
-  ScrnResultList []CrnResult `json:"scrnResultList"`
+	ScrnResultList []CrnResult `json:"scrnResultList"`
 }
 
 func Request(ecrnList, scrnList []string, token string) {
@@ -39,65 +39,105 @@ func Request(ecrnList, scrnList []string, token string) {
 	body := []byte(fmt.Sprintf(`{
     "ECRN": [
       %s
-    ],
-    "SCRN": [
-      %s
-    ]
+    ], "SCRN": [ %s ]
   }`, ecrnString, scrnString))
 
 	r, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
 	if err != nil {
-    config.Logcu.Log(fmt.Sprintf("Request hatası: %v", err))
-    return
+		Log(fmt.Sprintf("Request hatası: %v", err))
+		return
 	}
 	r.Header.Add("Authorization", token)
 	r.Header.Add("Content-Type", "application/json")
+	r.Header.Add("User-Agent", config.Agent)
 
 	client := &http.Client{}
 	res, err := client.Do(r)
 	if err != nil {
-    config.Logcu.Log(fmt.Sprintf("Request hatası: %v", err))
-    return
+		Log(fmt.Sprintf("Request hatası: %v", err))
+		return
 	}
 	defer res.Body.Close()
 
-  // dump2, err := httputil.DumpResponse(res, true)
-  // config.Logcu.Log(string(dump2))
+	// dump2, err := httputil.DumpResponse(res, true)
+	// Log(string(dump2))
 
-	config.Logcu.Log(res.Status)
-  if res.StatusCode == 401 {
-    config.Logcu.Log("Token hatalı")
-    return
-  }
-  if res.StatusCode == 501 {
-    config.Logcu.Log("API hatası")
-    return
-  }
-  if res.StatusCode != 200 {
-    config.Logcu.Log("Bir hata oluştu")
-    return
-  }
+	Log(res.Status)
+	if res.StatusCode == 401 {
+		Log("Token hatalı")
+		return
+	}
+	if res.StatusCode == 501 {
+		Log("API hatası")
+		return
+	}
+	if res.StatusCode != 200 {
+		Log("Bir hata oluştu")
+		return
+	}
 
 	post := &Post{}
 	derr := json.NewDecoder(res.Body).Decode(post)
 	if derr != nil {
-    config.Logcu.Log("Decode hatası")
-    return
+		Log("Decode hatası")
+		return
 	}
 
 	// print response
-  config.Logcu.Log("<--SONUÇLAR-->")
-  config.Logcu.Log("Alınacak dersler")
+	Log("<--SONUÇLAR-->")
+	Log("Alınacak dersler")
 	for _, ecrn := range post.EcrnResultList {
 		// Write those in 1 line
-		config.Logcu.Log(fmt.Sprintf("[%s] -> [%t] -> [%d] -> [%s]", ecrn.Crn, ecrn.OperationFinished, ecrn.StatusCode, ecrn.ResultCode))
-		config.Logcu.Log(fmt.Sprintf(returnValues[ecrn.ResultCode], ecrn.Crn))
+		Log(fmt.Sprintf("[%s] -> [%t] -> [%d] -> [%s]", ecrn.Crn, ecrn.OperationFinished, ecrn.StatusCode, ecrn.ResultCode))
+		Log(fmt.Sprintf(returnValues[ecrn.ResultCode], ecrn.Crn))
 	}
 
-  config.Logcu.Log("Bırakılacak dersler")
+	Log("Bırakılacak dersler")
 	for _, scrn := range post.ScrnResultList {
 		// Write those in 1 line
-		config.Logcu.Log(fmt.Sprintf("[%s] -> [%t] -> [%d] -> [%s]", scrn.Crn, scrn.OperationFinished, scrn.StatusCode, scrn.ResultCode))
-		config.Logcu.Log(fmt.Sprintf(returnValues[scrn.ResultCode], scrn.Crn))
+		Log(fmt.Sprintf("[%s] -> [%t] -> [%d] -> [%s]", scrn.Crn, scrn.OperationFinished, scrn.StatusCode, scrn.ResultCode))
+		Log(fmt.Sprintf(returnValues[scrn.ResultCode], scrn.Crn))
 	}
+}
+
+type KayitSinifResultList struct {
+	Crn             string `json:"crn"`
+	BransKodu       string `json:"bransKodu"`
+	DersKodu        string `json:"dersKodu"`
+	DersAdiTR       string `json:"dersAdiTR"`
+	YerZamanBilgiEN string `json:"yerZamanBilgiEN"`
+}
+
+type ScheduleResponse struct {
+	Results []KayitSinifResultList `json:"kayitSinifResultList"`
+}
+
+func ScheduleRequest(token string) ScheduleResponse {
+	url := "https://obs.itu.edu.tr/api/ogrenci/sinif/KayitliSinifListesi/774" //775
+	resp := &ScheduleResponse{}
+
+	r, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		Log(fmt.Sprintf("Request hatası: %v", err))
+		return *resp
+	}
+	r.Header.Add("Authorization", token)
+	r.Header.Add("Accepts", "application/json")
+	r.Header.Add("User-Agent", config.Agent)
+
+	client := &http.Client{}
+	res, err := client.Do(r)
+	if err != nil {
+		fmt.Println("request error", err)
+		return *resp
+	}
+	defer res.Body.Close()
+
+	derr := json.NewDecoder(res.Body).Decode(resp)
+	if derr != nil {
+		fmt.Println("decode error")
+		return *resp
+	}
+
+	return *resp
 }

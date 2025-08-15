@@ -1,0 +1,11 @@
+package views
+
+import "itu-pickle/views/layout"
+import "itu-pickle/utils"
+
+templ Schedule(schedule utils.ScheduleResponse) {
+  @views.Layout() {
+    @SchedulePanel(schedule)
+  }
+}
+  

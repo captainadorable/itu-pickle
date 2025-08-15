@@ -1,0 +1,29 @@
+package views
+
+
+templ LoginPanel(fullname string, loggedin bool) {
+  <div class="w-full h-full flex flex-col justify-center items-center rounded-lg rounded-l-none"> 
+    if loggedin {
+      <div>Hoşgeldin {fullname}</div>
+
+    } else {
+      <form id="form" hx-post="/login" class="w-full h-full flex flex-col items-center justify-center"
+          hx-on="submit: event.preventDefault()">
+        <div class="text-3xl pb-12">
+          Giriş Yap
+        </div>
+        <div class="w-2/3 flex flex-col items-center">
+          <label for="username" class="font-bold self-start">Kullanıcı adı</label>
+          <input type="text" name="username" placeholder="Kullanıcı adı" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
+            required="true" />
+        </div>
+        <div class="w-2/3 flex flex-col items-center">
+          <label for="password" class="font-bold self-start">Parola</label>
+          <input type="password" name="password" placeholder="Parola" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
+            required="true" />
+        </div>
+        <button type="submit" class="block w-2/3 p-2 m-2 bg-blue-500 text-white hover:cursor-pointer">Giriş yap</button>
+      </form>
+    }
+  </div> 
+}

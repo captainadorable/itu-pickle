@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"itu-pickle/config"
 	"itu-pickle/picker"
 	"itu-pickle/utils"
 	index "itu-pickle/views/index"
@@ -11,6 +10,6 @@ import (
 
 
 func HandleIndex(c echo.Context) error {
-  return utils.Render(c, index.Index(picker.Started, config.Logcu.Messages))
+  return utils.Render(c, index.Index(picker.Started, utils.Logcu.Messages, utils.User.Fullname, utils.User.LoggedIn))
 }
 

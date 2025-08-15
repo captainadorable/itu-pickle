@@ -10,4 +10,8 @@ build-macos:
 	~/go/bin/templ generate
 	GOOS=darwin GOARCH=amd64 go build -o ./bin/itu-pickle-macos ./cmd
 
-build-all: build-windows build-linux build-macos
+build-arm:
+	~/go/bin/templ generate
+	GOOS=linux GOARCH=arm GOARM=6 go build -o ./bin/itu-pickle-arm ./cmd
+
+build-all: build-windows build-linux build-macos build-arm

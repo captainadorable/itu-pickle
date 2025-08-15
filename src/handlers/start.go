@@ -1,7 +1,8 @@
 package handlers
 
 import (
-	"itu-pickle/config"
+	"fmt"
+	"itu-pickle/utils"
 	"itu-pickle/picker"
 	"net/http"
 	"regexp"
@@ -18,6 +19,12 @@ func HandleStart(c echo.Context) error {
 	scrn := c.FormValue("scrn")
 	timeout := c.FormValue("timeout")
 
+	targethour := c.FormValue("targethour")
+	targetminute := c.FormValue("targetminute")
+	targetsecond := c.FormValue("targetsecond")
+
+	fmt.Println("QWE", targethour, targetminute, targetsecond)
+
   // check values
   token = strings.TrimSpace(token)
   if !strings.HasPrefix(token, "Bearer ") {
@@ -26,19 +33,36 @@ func HandleStart(c echo.Context) error {
 
   ecrn = strings.TrimSpace(ecrn)
   if !isValidPattern(ecrn) {
-    config.Logcu.Log("[HATA]: Alınacak dersler hatalı girildi: CRN1 CRN2 CRN3")
+    utils.Log("[HATA]: Alınacak dersler hatalı girildi: CRN1 CRN2 CRN3")
     return c.String(http.StatusBadRequest, "Timeout is not a number.")
   }
 
   scrn = strings.TrimSpace(scrn)
   if !isValidPattern(scrn) && len(scrn) != 0 {
-    config.Logcu.Log("[HATA]: Bırakılacak dersler hatalı girildi: CRN1 CRN2 CRN3")
+    utils.Log("[HATA]: Bırakılacak dersler hatalı girildi: CRN1 CRN2 CRN3")
     return c.String(http.StatusBadRequest, "Timeout is not a number.")
   }
 
+  targethour_parsed, err := strconv.Atoi(targethour)
+  if err != nil {
+    utils.Log("[HATA]: Hedef saat bir sayı olmalı.")
+    return c.String(http.StatusBadRequest, "Target time is not a number.")
+  }
+  targetminute_parsed, err := strconv.Atoi(targetminute)
+  if err != nil {
+    utils.Log("[HATA]: Hedef dakika bir sayı olmalı.")
+    return c.String(http.StatusBadRequest, "Target minute is not a number.")
+  }
+  targetsecond_parsed, err := strconv.Atoi(targetsecond)
+  if err != nil {
+    utils.Log("[HATA]: Hedef saniye bir sayı olmalı.")
+    return c.String(http.StatusBadRequest, "Target second is not a number.")
+  }
+
+
   timeout_parsed, err := strconv.Atoi(timeout)
   if err != nil {
-    config.Logcu.Log("[HATA]: Süre bir sayı olmalı.")
+    utils.Log("[HATA]: Süre bir sayı olmalı.")
     return c.String(http.StatusBadRequest, "Timeout is not a number.")
   }
 
@@ -49,7 +73,7 @@ func HandleStart(c echo.Context) error {
     scrnList = []string{}
   }
     
-  picker.Start(token, timeout_parsed, ecrnList, scrnList)
+  picker.Start(token, timeout_parsed, ecrnList, scrnList, targethour_parsed, targetminute_parsed, targetsecond_parsed)
 
 	// Send response
 	return c.String(200, "Started")
@@ -61,7 +85,7 @@ func HandleStop(c echo.Context) error {
 }
 
 func isValidPattern(s string) bool {
-	// Regular expression to match "somevalue,somevalue,somevalue,..."
+	// Regular expression to match "somevalue somevalue somevalue,..."
 	re := regexp.MustCompile(`^(\w+ )*\w+$`)
 	return re.MatchString(s)
 }

@@ -1,4 +1,4 @@
-package logger
+package utils
 
 import (
 	"bytes"
@@ -26,21 +26,21 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool { return true },
 }
 
-func NewLogger() *Logger {
-	logger := &Logger{
+var Logcu *Logger
+
+func StartLogger() {
+	Logcu = &Logger{
 		Broadcast: make(chan string),
 		Clients:   make(map[*websocket.Conn]chan string),
 	}
-	go logger.Broadcaster()
-
-	return logger
+	go Broadcaster()
 }
 
-func (l *Logger) Broadcaster() {
-	for msg := range l.Broadcast {
+func Broadcaster() {
+	for msg := range Logcu.Broadcast {
 		log.Println("Broadcasting")
-		l.mu.Lock()
-		for client, ch := range l.Clients {
+		Logcu.mu.Lock()
+		for client, ch := range Logcu.Clients {
 			select {
 			case ch <- msg:
         log.Println("Message sent to client: ", client.RemoteAddr())
@@ -48,69 +48,68 @@ func (l *Logger) Broadcaster() {
 				log.Printf("Client channel full, disconnecting client: %v\n", client.RemoteAddr())
 				close(ch)
 				client.Close()
-				delete(l.Clients, client)
+				delete(Logcu.Clients, client)
 			}
-
 		}
-		l.mu.Unlock()
+		Logcu.mu.Unlock()
 	}
 }
 
-func (l *Logger) handleClient(conn *websocket.Conn) {
+func handleClient(conn *websocket.Conn) {
 	msgChan := make(chan string, 200) // fixed size to prevent slow clients
-	l.mu.Lock()
-	l.Clients[conn] = msgChan
-	l.mu.Unlock()
+	Logcu.mu.Lock()
+	Logcu.Clients[conn] = msgChan
+	Logcu.mu.Unlock()
 	log.Println("Client connected")
-  l.Log("Sunucuya bağlanıldı")
+  Log("Sunucuya bağlanıldı")
 
 	go func() {
 		defer func() {
-      l.disconnectClient(conn)
+      disconnectClient(conn)
 		}()
 
 		for msg := range msgChan {
 			if err := conn.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
 				log.Printf("Error writing to client: %v: %v", conn.RemoteAddr(), err)
-        l.disconnectClient(conn)
+        disconnectClient(conn)
 				return
 			}
 		}
 	}()
 }
-func (l *Logger) disconnectClient(conn *websocket.Conn) {
+func disconnectClient(conn *websocket.Conn) {
 	conn.Close()
-	l.mu.Lock()
-	delete(l.Clients, conn)
-	l.mu.Unlock()
+	Logcu.mu.Lock()
+	delete(Logcu.Clients, conn)
+	Logcu.mu.Unlock()
   log.Println("Client disconnected: ", conn.RemoteAddr())
 }
-func (l *Logger) WebSocketHandler(c echo.Context) error {
+func WebSocketHandler(c echo.Context) error {
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	if err != nil {
 		return err
 	}
 
-	l.handleClient(conn)
+	handleClient(conn)
 	return nil
 }
 
-func (l *Logger) Log(msg string) {
+func Log(msg string) {
 	// log current time and msg
 	message := fmt.Sprintf("[%s] %s", time.Now().Format("2006-01-02 15:04:05"), msg)
-	l.Messages = append(l.Messages, message)
+	Logcu.Messages = append(Logcu.Messages, message)
 
 	var buffer bytes.Buffer
-	err := l.SendComponent(views.Messages([]string{message}))
+	err := SendComponent(views.Messages([]string{message}))
 	if err != nil {
     log.Println("Error broadcasting component")
 		return
 	}
 
-	l.Broadcast <- buffer.String()
+	Logcu.Broadcast <- buffer.String()
 }
 
-func (l *Logger) SendComponent(component templ.Component) error {
+func SendComponent(component templ.Component) error {
 	var buffer bytes.Buffer
 	err := component.Render(context.Background(), &buffer)
 
@@ -118,6 +117,7 @@ func (l *Logger) SendComponent(component templ.Component) error {
 		return err
 	}
 
-	l.Broadcast <- buffer.String()
+	Logcu.Broadcast <- buffer.String()
   return nil
 }
+

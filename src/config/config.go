@@ -2,14 +2,14 @@ package config
 
 import (
 	"flag"
-	"itu-pickle/logger"
 	"strings"
 )
 
 
-var Logcu *logger.Logger
 var Port string
 var Url string
+
+var Agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 
 func Config() {
   flag.StringVar(&Port, "port", ":3001", "--port PORT")
@@ -19,6 +19,4 @@ func Config() {
   if !strings.HasPrefix(Port, ":") {
     Port = ":" + Port 
   }
-
-  Logcu = logger.NewLogger()
 }

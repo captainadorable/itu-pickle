@@ -21,9 +21,26 @@ templ Form(started bool) {
       <label for="scrn" class="font-bold self-start">Bırakılacak Dersler</label>
       <input type="text" name="scrn" placeholder="CRN1 CRN2 CRN3" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]" />
     </div>
+    <div class="w-2/3 flex space-x-4 items-center">
+      <div class="flex flex-col">
+        <label for="targethour" class="font-bold self-start">Hedef Saat</label>
+        <input type="text" name="targethour" placeholder="Örn: 15" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
+          required="true" />
+      </div>
+      <div class="flex flex-col">
+        <label for="targetminute" class="font-bold self-start">Hedef Dakika</label>
+        <input type="text" name="targetminute" placeholder="Örn: 30" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
+          required="true" />
+      </div>
+      <div class="flex flex-col">
+        <label for="targetsecond" class="font-bold self-start">Hedef Saniye</label>
+        <input type="text" name="targetsecond" placeholder="Örn: 10" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
+          required="true" />
+      </div>
+    </div>
     <div class="w-2/3 flex flex-col items-center">
       <label for="timeout" class="font-bold self-start">İstek aralığı</label>
-      <input type="text" name="timeout" placeholder="Süre" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
+      <input type="text" name="timeout" placeholder="Saniye cinsinden süre" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
         required="true" />
     </div>
     @FormButtons(started)

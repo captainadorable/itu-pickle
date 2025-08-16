@@ -120,4 +120,3 @@ func SendComponent(component templ.Component) error {
 	Logcu.Broadcast <- buffer.String()
   return nil
 }
-

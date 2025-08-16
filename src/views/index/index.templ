@@ -1,10 +1,11 @@
 package views
 
 import "itu-pickle/views/layout"
+import "itu-pickle/models"
 
-templ Index(started bool, messages []string, fullname string, loggedin bool) {
+templ Index(started bool, messages []string, user models.UserData) {
   @views.Layout() {
-    @Panel(started, messages, fullname, loggedin)
+    @Panel(started, messages, user)
   }
 }
   

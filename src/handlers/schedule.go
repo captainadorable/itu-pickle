@@ -9,7 +9,7 @@ import (
 )
 
 func HandleSchedule(c echo.Context) error {
-  return utils.Render(c, views.Schedule(utils.ScheduleResponse{}))
+  return views.Schedule(utils.ScheduleResponse{}).Render(c.Request().Context(), c.Response())
 }
 
 func HandleGetSchedule(c echo.Context) error {
@@ -26,5 +26,5 @@ func HandleGetSchedule(c echo.Context) error {
 
   
 	// Send response
-	return utils.Render(c, views.Schedule(schedule))
+	return views.Schedule(schedule).Render(c.Request().Context(), c.Response())
 }

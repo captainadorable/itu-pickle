@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"itu-pickle/client"
 	"itu-pickle/config"
 	"itu-pickle/handlers"
 	"itu-pickle/utils"
@@ -15,6 +16,9 @@ func main() {
 
 	utils.StartLogger()
 
+	apiClient := client.NewApiClient()
+
+
   e.GET("/ws", utils.WebSocketHandler)
 
   e.GET("/", handlers.HandleIndex)
@@ -24,7 +28,9 @@ func main() {
   e.GET("/stop", handlers.HandleStop)
   e.POST("/getSchedule", handlers.HandleGetSchedule)
 
-	e.POST("/login", handlers.HandleLoginPost)
+	e.POST("/login", func(c echo.Context) error {
+		return handlers.HandleLoginPost(c, apiClient)
+	})
 
   e.GET("/favicon.ico", func(c echo.Context) error {
     return c.File("./favicon.ico")

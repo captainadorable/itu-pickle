@@ -1,9 +1,17 @@
 package views
 
-templ Messages(messages []string) {
-  <div class="h-2/3 w-full flex flex-col space-y-2 p-4 overflow-auto" id="messages" hx-swap-oob="beforeend">
+templ Messages(messages []string, class string) {
+  <div class="h-1/2 w-full flex flex-col bg-[#0b0516] font-mono space-y-2 p-4 overflow-auto" id="messages" hx-swap-oob="beforeend" hx-on::load="scrollToBottom()">
     for _, msg := range messages {
-      @Message(msg)
+      @Message(msg, class)
     }
+
+  <script>
+    const messages = document.getElementById('messages');
+    function scrollToBottom() {
+      messages.scrollTop = messages.scrollHeight;
+    }
+    scrollToBottom();
+  </script>
   </div>
 }

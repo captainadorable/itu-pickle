@@ -2,12 +2,20 @@ package utils
 
 import (
 	"bufio"
-	"fmt"
 	"net/http"
 	"strings"
 )
 
-var returnValues = map[string]string{
+type Course struct {
+	Crn string
+	Code string
+	Type string
+	Teacher string
+	Building string
+	Exists bool
+}
+
+var ReturnValues = map[string]string{
 	"successResult": "CRN %s için işlem başarıyla tamamlandı.",
 	"errorResult": "CRN %s için Operasyon tamamlanamadı.",
 	"": "CRN %s için Operasyon tamamlanamadı.",
@@ -39,19 +47,21 @@ var returnValues = map[string]string{
 	"Kontenjan Dolu": "CRN %s için kontenjan dolu olduğundan dolayı alınamadı.",
 }
 
-func FindCrns(crns []string) []string {
+var crnToCourse map[string]string = nil
+
+func GetCrns() (map[string]string, error) {
 	url := "https://raw.githubusercontent.com/itu-helper/data/main/lessons.psv"
 
 	// HTTP GET request
 	resp, err := http.Get(url)
 	if err != nil {
-    return nil
+    return nil, err
 	}
 	defer resp.Body.Close()
 
 	// Create a map to store lessons
 	crnToLesson := make(map[string]string)
-	
+
 	// Read the response line by line
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
@@ -63,19 +73,42 @@ func FindCrns(crns []string) []string {
 	}
 
 	if err := scanner.Err(); err != nil {
-    return nil
+    return nil, err
 	}
 
-  var crnList []string
+	return crnToLesson, nil
+}
+
+func FindCrns(crns []string) ([]Course, error) {
+	if crnToCourse == nil {
+		c, err := GetCrns()
+		if err != nil {
+			return nil, err
+		}
+		crnToCourse = c
+	}
+	
+  var courseList []Course
   for _, crn := range crns {
-    lesson, exists := crnToLesson[crn]
+    c, exists := crnToCourse[crn]
     if exists {
-      var data = strings.Split(lesson, "|")
-      crnList = append(crnList,  fmt.Sprintf("[%s] -> [%s] -> [%s] -> [%s]", data[0], data[1], data[2], data[4]))
+      var data = strings.Split(c, "|")
+			course := Course{
+				Crn: data[0],	
+				Code: data[1],	
+				Type: data[2],	
+				Teacher: data[3],	
+				Building: data[4],	
+				Exists: true,
+			}
+			courseList = append(courseList, course)
     } else {
-      crnList = append(crnList, fmt.Sprintf("Not Found: %s", crn))
+			course := Course{
+				Crn: crn,	
+				Exists: false,
+			}
+			courseList = append(courseList, course)
     }
   }
-
-  return crnList
+  return courseList, nil
 }

@@ -15,7 +15,7 @@ func HandleLoginPost(c echo.Context, apiClient *client.ApiClient) error {
 
 	userData, err := apiClient.LoginWithCredentials(username, password)
 	if err != nil {
-		utils.Log(err.Error())
+		utils.Log(err.Error(), "error")
 		return index.LoginPanel(models.UserData{LoggedIn: false}).Render(c.Request().Context(), c.Response())
 	}
 

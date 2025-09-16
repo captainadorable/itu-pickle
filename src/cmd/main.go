@@ -22,11 +22,12 @@ func main() {
   e.GET("/ws", utils.WebSocketHandler)
 
   e.GET("/", handlers.HandleIndex)
-  e.GET("/schedule", handlers.HandleSchedule)
   
-  e.POST("/start", handlers.HandleStart)
+  e.POST("/start", func(c echo.Context) error {
+		return handlers.HandleStart(c, apiClient)
+	})
+
   e.GET("/stop", handlers.HandleStop)
-  e.POST("/getSchedule", handlers.HandleGetSchedule)
 
 	e.POST("/login", func(c echo.Context) error {
 		return handlers.HandleLoginPost(c, apiClient)
@@ -37,6 +38,7 @@ func main() {
   })
 
   fmt.Println("Sunucu başlatıldı. Arayüz: http://localhost"+config.Port)
+	utils.OpenURL("http://localhost"+config.Port)
   e.Logger.Fatal(e.Start(config.Port))
 }
 

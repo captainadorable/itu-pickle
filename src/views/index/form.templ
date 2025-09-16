@@ -1,6 +1,6 @@
 package views
 
-templ Form(started bool) {
+templ Form(started, loggedin bool) {
 // Create a form with htmx contains 3 input fields and a submit button
   <form id="form" hx-post="/start" hx-swap="none" class="w-full h-full flex flex-col items-center justify-center"
     hx-on="submit: event.preventDefault()">
@@ -9,11 +9,11 @@ templ Form(started bool) {
     </div>
     <div class="w-2/3 flex flex-col items-center">
       <label for="token" class="font-bold self-start">Bearer token</label>
-      <input type="text" name="token" placeholder="Token" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
-        required="true" />
+      <input type="text" name="token" placeholder="Token (Giriş yapıldıysa otomatik alınır)" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
+         />
     </div>
     <div class="w-2/3 flex flex-col items-center">
-      <label for="ecrn" class="font-bold self-start">Alınacak Dersler</label>
+      <label for="ecrn" class="font-bold self-start">Alınacak Dersler *</label>
       <input type="text" name="ecrn" placeholder="CRN1 CRN2 CRN3" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
         required="true" />
     </div>
@@ -25,23 +25,30 @@ templ Form(started bool) {
       <div class="flex flex-col">
         <label for="targethour" class="font-bold self-start">Hedef Saat</label>
         <input type="text" name="targethour" placeholder="Örn: 15" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
-          required="true" />
+           />
       </div>
       <div class="flex flex-col">
         <label for="targetminute" class="font-bold self-start">Hedef Dakika</label>
         <input type="text" name="targetminute" placeholder="Örn: 30" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
-          required="true" />
+           />
       </div>
       <div class="flex flex-col">
         <label for="targetsecond" class="font-bold self-start">Hedef Saniye</label>
         <input type="text" name="targetsecond" placeholder="Örn: 10" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
-          required="true" />
+           />
       </div>
     </div>
     <div class="w-2/3 flex flex-col items-center">
-      <label for="timeout" class="font-bold self-start">İstek aralığı</label>
+      <label for="timeout" class="font-bold self-start">İstek aralığı *</label>
       <input type="text" name="timeout" placeholder="Saniye cinsinden süre" class="block w-full p-2 mt-2 mb-6 bg-[#535C91]"
         required="true" />
+    </div>
+    <div class="w-2/3 flex flex-col items-start space-y-4">
+      <div class="flex flex-row space-x-8">
+        <label for="crncontrol" class="font-bold ">CRN kontrolü</label>
+        <input type="checkbox" name="crncontrol" class="block bg-[#535C91]"
+        />
+      </div>
     </div>
     @FormButtons(started)
   </form>

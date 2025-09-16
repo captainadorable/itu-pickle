@@ -6,23 +6,12 @@ import "itu-pickle/models"
 templ LoginPanel(user models.UserData) {
   <div class="w-full h-full flex flex-col justify-center items-center rounded-lg rounded-l-none"> 
     if user.LoggedIn {
-      <div class="text-3xl">Hoş geldin {user.Fullname}</div>
-
-      <div class="flex flex-col space-y-4 justify-center items-center">
-        for _, token := range user.Tokens {
-          <div class="flex space-x-2">
-            <div class="w-1/2 truncate">
-              {token.Token}
-            </div>
-            <div class="w-1/2">
-              {token.CreatedAt.Format("15:04:05")}
-            </div>
-          </div>
-        }
+      <div class="flex flex-col justify-center items-center"> 
+        <div class="text-xl">Hoş geldin</div>
+        <div class="text-xl font-bold">{user.Fullname}</div>
       </div>
-
     } else {
-      <form id="form" hx-post="/login" class="w-full h-full flex flex-col items-center justify-center"
+      <form id="login" hx-post="/login" class="w-full h-1/2 flex flex-col items-center justify-center"
           hx-on="submit: event.preventDefault()">
         <div class="text-3xl pb-12">
           Giriş Yap

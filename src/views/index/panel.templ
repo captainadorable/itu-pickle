@@ -4,13 +4,13 @@ import "itu-pickle/models"
 
 templ Panel(started bool, messages []string, user models.UserData) {
 <div class="w-full h-full flex text-white rounded-lg" hx-ext="ws" ws-connect="/ws">
-  <div class="w-1/3 h-full bg-[#0f0f30] rounded-lg rounded-r-none">
+  <div class="w-1/5 h-full bg-[#0f0f30] rounded-lg rounded-r-none">
   @LoginPanel(user)
   </div>
-  <div class="w-1/3 h-full bg-[#1B1A55] rounded-lg rounded-r-none">
-    @Form(started)
+  <div class="w-2/5 h-full bg-[#1B1A55] rounded-lg rounded-r-none">
+    @Form(started, user.LoggedIn)
   </div>
-  <div class="w-1/3 h-full">
+  <div class="w-2/5 h-full bg-[#0b0516]">
     @Log(messages)
   </div>
 </div>

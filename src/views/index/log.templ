@@ -1,10 +1,10 @@
 package views
 
 templ Log(messages []string) {
-  <div class="w-full h-full flex flex-col justify-center items-center bg-[#101010] rounded-lg rounded-l-none"> 
-    <div class="text-3xl pb-12">
-      Server Log
+  <div class="w-full h-full flex flex-col justify-center items-center  bg-[#0b0516] rounded-lg rounded-l-none"> 
+    <div class="font-bold text-2xl mb-8">
+      Sunucu
     </div>
-    @Messages(messages)
+    @Messages(messages, "")
   </div> 
 }

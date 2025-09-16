@@ -1,8 +1,20 @@
 package views
 
 
-templ Message(msg string) {
-  <div class="w-full">
-    {msg}
-  </div> 
+templ Message(msg, class string) {
+  switch class {
+    case "default":
+      <div class="w-full text-[#e5dff1]">
+        {msg}
+      </div> 
+    case "success":
+      <div class="w-full text-[#7aa860] font-bold rounded-lg">
+        {msg}
+      </div> 
+    case "error":
+      <div class="w-full text-[#e6949a] font-bold rounded-lg">
+        {msg}
+      </div> 
+  
+  }
 }

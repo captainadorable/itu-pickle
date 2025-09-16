@@ -38,14 +38,14 @@ func StartLogger() {
 
 func Broadcaster() {
 	for msg := range Logcu.Broadcast {
-		log.Println("Broadcasting")
+		// log.Println("Broadcasting")
 		Logcu.mu.Lock()
 		for client, ch := range Logcu.Clients {
 			select {
 			case ch <- msg:
-        log.Println("Message sent to client: ", client.RemoteAddr())
+        // log.Println("Message sent to client: ", client.RemoteAddr())
 			default:
-				log.Printf("Client channel full, disconnecting client: %v\n", client.RemoteAddr())
+				// log.Printf("Client channel full, disconnecting client: %v\n", client.RemoteAddr())
 				close(ch)
 				client.Close()
 				delete(Logcu.Clients, client)
@@ -60,8 +60,8 @@ func handleClient(conn *websocket.Conn) {
 	Logcu.mu.Lock()
 	Logcu.Clients[conn] = msgChan
 	Logcu.mu.Unlock()
-	log.Println("Client connected")
-  Log("Sunucuya bağlanıldı")
+	// log.Println("Client connected")
+  Log("Sunucuya bağlanıldı", "success")
 
 	go func() {
 		defer func() {
@@ -82,7 +82,7 @@ func disconnectClient(conn *websocket.Conn) {
 	Logcu.mu.Lock()
 	delete(Logcu.Clients, conn)
 	Logcu.mu.Unlock()
-  log.Println("Client disconnected: ", conn.RemoteAddr())
+  // log.Println("Client disconnected: ", conn.RemoteAddr())
 }
 func WebSocketHandler(c echo.Context) error {
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
@@ -94,13 +94,13 @@ func WebSocketHandler(c echo.Context) error {
 	return nil
 }
 
-func Log(msg string) {
+func Log(msg, class string) {
 	// log current time and msg
-	message := fmt.Sprintf("[%s] %s", time.Now().Format("2006-01-02 15:04:05"), msg)
+	message := fmt.Sprintf("[%s] %s", time.Now().Format("15:04:05"), msg)
 	Logcu.Messages = append(Logcu.Messages, message)
 
 	var buffer bytes.Buffer
-	err := SendComponent(views.Messages([]string{message}))
+	err := SendComponent(views.Messages([]string{message}, class))
 	if err != nil {
     log.Println("Error broadcasting component")
 		return
@@ -108,6 +108,7 @@ func Log(msg string) {
 
 	Logcu.Broadcast <- buffer.String()
 }
+
 
 func SendComponent(component templ.Component) error {
 	var buffer bytes.Buffer

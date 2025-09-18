@@ -9,6 +9,7 @@ import (
 	"itu-pickle/models"
 	"net/http"
 	"net/http/cookiejar"
+	"net/http/httputil"
 	"net/url"
 	"strings"
 	"time"
@@ -210,12 +211,14 @@ func (api *ApiClient) Request(ecrnList, scrnList []string, token string) (PostRe
 	defer res.Body.Close()
 
 	// dump2, err := httputil.DumpResponse(res, true)
-	// Log(string(dump2))
+	// fmt.Println(string(dump2))
 
 	if res.StatusCode == 401 {
+		err = fmt.Errorf("HTTP/2.0 401 Unauthorized")
 		return postResp, err
 	}
 	if res.StatusCode == 501 {
+		err = fmt.Errorf("HTTP/2.0 501 Server")
 		return postResp, err
 	}
 	if res.StatusCode != 200 {

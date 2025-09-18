@@ -105,8 +105,9 @@ func Start(conf PickerConfig) {
 	response, err := conf.ApiClient.Request(conf.Ecrn, conf.Scrn, conf.Token)
 	if err != nil {
 		utils.Log(fmt.Sprintf("Bir hata oluştu: %v", err), "error")
+	} else {
+		LogResponse(response)
 	}
-	LogResponse(response)
 
   utils.Log(fmt.Sprintf("%d saniye bekleniyor", conf.Timeout), "default")
   go func() {

@@ -219,17 +219,17 @@ func (api *ApiClient) Request(ecrnList, scrnList []string, token string) (PostRe
 	// fmt.Println(string(dump2))
 
 	// Compare server time vs local time
-	serverDateStr := res.Header.Get("Date")
-	if serverDateStr == "" {
-		fmt.Println("Date header not found in the response.")
-	}
-	serverTime, err := time.Parse(time.RFC1123, serverDateStr)
-	if err != nil {
-		fmt.Println("Failed to parse date string: %v", err)
-	}
-	utils.Log(fmt.Sprintf("Parsed server time (UTC): %v\n", serverTime), "default")
-	utils.Log(fmt.Sprintf("Server time as local time: %v\n", serverTime.Local()), "default")
-	utils.Log(fmt.Sprintf("Local time as local time: %v\n", time.Now()), "default")
+	// serverDateStr := res.Header.Get("Date")
+	// if serverDateStr == "" {
+	// 	fmt.Println("Date header not found in the response.")
+	// }
+	// serverTime, err := time.Parse(time.RFC1123, serverDateStr)
+	// if err != nil {
+	// 	fmt.Println("Failed to parse date string: %v", err)
+	// }
+	// utils.Log(fmt.Sprintf("Parsed server time (UTC): %v\n", serverTime), "default")
+	// utils.Log(fmt.Sprintf("Server time as local time: %v\n", serverTime.Local()), "default")
+	// utils.Log(fmt.Sprintf("Local time as local time: %v\n", time.Now()), "default")
 
 	if res.StatusCode == 401 {
 		err = fmt.Errorf("HTTP/2.0 401 Unauthorized")

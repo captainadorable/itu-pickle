@@ -54,7 +54,9 @@ func HandleStart(c echo.Context, apiClient *client.ApiClient) error {
   }
 	
 
-  var targethour_parsed, targetminute_parsed, targetsecond_parsed int
+	targethour_parsed := 999
+	targetminute_parsed := 999
+	targetsecond_parsed := 999
 	var err error
 
 	if targethour == "" || targetminute == "" || targetsecond == "" {

@@ -163,7 +163,7 @@ func ConfigureTime(targetHour, targetMinute, targetSecond int) (time.Time, time.
 	now := time.Now()
 	targetTime := time.Date(now.Year(), now.Month(), now.Day(), targetHour, targetMinute, targetSecond, 0, now.Location())
 	tokenTime := targetTime.Add(time.Second * -30)
-	if targetHour == 0 || targetMinute == 0 || targetSecond == 0 {
+	if targetHour == 999 || targetMinute == 999 || targetSecond == 999 {
 		targetTime = now
 		tokenTime = now
 	}

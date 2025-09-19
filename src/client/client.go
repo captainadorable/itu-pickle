@@ -7,7 +7,6 @@ import (
 	"io"
 	"itu-pickle/config"
 	"itu-pickle/models"
-	"itu-pickle/utils"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"

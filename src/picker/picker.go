@@ -86,7 +86,9 @@ func Start(conf PickerConfig) {
 	}
 
 	// Target time
-	targetTimeTimer := time.NewTimer(targetTime.Sub(now))
+	now = time.Now()
+	targetTimeDuration = targetTime.Sub(now)
+	targetTimeTimer := time.NewTimer(targetTimeDuration)
 	utils.Log(fmt.Sprintf("Hedef saate kadar bekleniyor (%s)", targetTimeDuration.String()), "default")
 
 	Loop2:

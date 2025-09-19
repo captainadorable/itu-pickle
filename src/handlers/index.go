@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func HandleIndex(c echo.Context) error {
-	return index.Index(picker.Started, utils.Logcu.Messages, models.UserData{LoggedIn: false}).Render(c.Request().Context(), c.Response())
+func HandleIndex(c echo.Context, userData models.UserData) error {
+	return index.Index(picker.Started, utils.Logcu.Messages, userData).Render(c.Request().Context(), c.Response())
 }
 

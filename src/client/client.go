@@ -9,7 +9,6 @@ import (
 	"itu-pickle/models"
 	"net/http"
 	"net/http/cookiejar"
-	"net/http/httputil"
 	"net/url"
 	"strings"
 	"time"
@@ -26,15 +25,19 @@ const (
 
 type ApiClient struct {
 	Client *http.Client
+	UserData models.UserData
 }
 
 func NewApiClient() *ApiClient {
 	jar, _ := cookiejar.New(nil)
+	userData := models.UserData{}
+
 	return &ApiClient{
 		Client: &http.Client{
 			Timeout: 10 * time.Second,
 			Jar:     jar,
 		},
+		UserData: userData,
 	}
 }
 
@@ -99,6 +102,7 @@ func (api *ApiClient) LoginWithCredentials(username, password string) (models.Us
 		LoggedIn: true,
 		Tokens:   []models.Token{token},
 	}
+	api.UserData = userData
 	return userData, nil
 }
 

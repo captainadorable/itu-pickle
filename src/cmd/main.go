@@ -21,7 +21,9 @@ func main() {
 
   e.GET("/ws", utils.WebSocketHandler)
 
-  e.GET("/", handlers.HandleIndex)
+  e.GET("/", func(c echo.Context) error {
+		return handlers.HandleIndex(c, apiClient.UserData)
+	})
   
   e.POST("/start", func(c echo.Context) error {
 		return handlers.HandleStart(c, apiClient)
